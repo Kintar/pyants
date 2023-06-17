@@ -5,6 +5,7 @@ from transition import Transition
 
 
 class ReplayMemory(object):
+
     def __init__(self, capacity):
         self.memory = deque([], maxlen=capacity)
 
