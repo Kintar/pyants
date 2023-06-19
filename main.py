@@ -1,6 +1,6 @@
 import gymnasium as gym
-import matplotlib
-import matplotlib.pyplot as plt
+# import matplotlib
+# import matplotlib.pyplot as plt
 import random
 import math
 from collections import namedtuple, deque
@@ -15,17 +15,18 @@ from dqn import DQN
 from memory import ReplayMemory
 from transition import Transition
 
-env = gym.make("CartPole-v1")
-
-# set up matplotlib
-is_ipython = 'inline' in matplotlib.get_backend()
-if is_ipython:
-    from IPython import display
-
-plt.ion()
+env = gym.make("CartPole-v1", render_mode="human")
+#
+# # set up matplotlib
+# is_ipython = 'inline' in matplotlib.get_backend()
+# if is_ipython:
+#     from IPython import display
+#
+# plt.ion()
 
 # if GPU is to be used
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(F"Using backend {device}")
 
 # BATCH_SIZE is the number of transitions sampled from the replay buffer
 # GAMMA is the discount factor as mentioned in the previous section
@@ -78,30 +79,30 @@ def select_action(state):
 episode_durations = []
 
 
-def plot_durations(show_result=False):
-    plt.figure(1)
-    durations_t = torch.tensor(episode_durations, dtype=torch.float)
-    if show_result:
-        plt.title('Result')
-    else:
-        plt.clf()
-        plt.title('Training...')
-    plt.xlabel('Episode')
-    plt.ylabel('Duration')
-    plt.plot(durations_t.numpy())
-    # Take 100 episode averages and plot them too
-    if len(durations_t) >= 100:
-        means = durations_t.unfold(0, 100, 1).mean(1).view(-1)
-        means = torch.cat((torch.zeros(99), means))
-        plt.plot(means.numpy())
-
-    plt.pause(0.001)  # pause a bit so that plots are updated
-    if is_ipython:
-        if not show_result:
-            display.display(plt.gcf())
-            display.clear_output(wait=True)
-        else:
-            display.display(plt.gcf())
+# def plot_durations(show_result=False):
+#     plt.figure(1)
+#     durations_t = torch.tensor(episode_durations, dtype=torch.float)
+#     if show_result:
+#         plt.title('Result')
+#     else:
+#         plt.clf()
+#         plt.title('Training...')
+#     plt.xlabel('Episode')
+#     plt.ylabel('Duration')
+#     plt.plot(durations_t.numpy())
+#     # Take 100 episode averages and plot them too
+#     if len(durations_t) >= 100:
+#         means = durations_t.unfold(0, 100, 1).mean(1).view(-1)
+#         means = torch.cat((torch.zeros(99), means))
+#         plt.plot(means.numpy())
+#
+#     plt.pause(0.001)  # pause a bit so that plots are updated
+#     if is_ipython:
+#         if not show_result:
+#             display.display(plt.gcf())
+#             display.clear_output(wait=True)
+#         else:
+#             display.display(plt.gcf())
 
 
 def optimize_model():
@@ -151,7 +152,7 @@ def optimize_model():
     optimizer.step()
 
 
-num_episodes = 100
+num_episodes = 350
 
 
 for i_episode in range(num_episodes):
@@ -188,10 +189,10 @@ for i_episode in range(num_episodes):
 
         if done:
             episode_durations.append(t + 1)
-            plot_durations()
+            # plot_durations()
             break
 
 print('Complete')
-plot_durations(show_result=True)
-plt.ioff()
-plt.show()
+# plot_durations(show_result=True)
+# plt.ioff()
+# plt.show()
